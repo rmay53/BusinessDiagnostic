@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Readiness Diagnostic — Modernizing Main Street</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f8f7f4;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── Layout ── */
+    .page-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .site-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0F6E56;
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+    }
+
+    .site-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1.2;
+      color: #0f1a15;
+      margin-bottom: 0.6rem;
+    }
+
+    .site-subtitle {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ── Progress ── */
+    .progress-wrap {
+      height: 3px;
+      background: #e0e0d8;
+      border-radius: 4px;
+      margin-bottom: 1.75rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #1D9E75;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 0.5rem;
+      text-align: right;
+    }
+
+    /* ── Intro banner ── */
+    .intro-banner {
+      background: #E1F5EE;
+      border-left: 3px solid #1D9E75;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #085041;
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+
+    /* ── Section cards ── */
+    .section-card {
+      background: #fff;
+      border: 1px solid #e8e6e0;
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f0ede6;
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 500;
+      color: #0f1a15;
+    }
+
+    /* ── Questions ── */
+    .question {
+      margin-bottom: 1.25rem;
+    }
+
+    .question:last-child { margin-bottom: 0; }
+
+    .question-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 0.65rem;
+      line-height: 1.5;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    @media (max-width: 480px) {
+      .options { grid-template-columns: 1fr; }
+    }
+
+    .option-btn {
+      background: #f8f7f4;
+      border: 1.5px solid #e0ddd6;
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      color: #555;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      line-height: 1.45;
+    }
+
+    .option-btn:hover {
+      border-color: #1D9E75;
+      color: #0f1a15;
+      background: #fff;
+    }
+
+    .option-btn.selected {
+      background: #0F6E56;
+      border-color: #0F6E56;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* ── Score preview ── */
+    .score-preview {
+      background: #fff;
+      border: 1px solid #e8e6e0;
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-top: 1.25rem;
+      display: none;
+    }
+
+    .score-top {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .score-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 3px solid;
+    }
+
+    .score-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .score-denom {
+      font-size: 11px;
+      margin-top: 2px;
+      opacity: 0.7;
+    }
+
+    .score-verdict-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .score-verdict {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: #0f1a15;
+    }
+
+    .score-tagline {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .dimension-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .dim-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dim-name {
+      font-size: 12px;
+      color: #888;
+      width: 160px;
+      flex-shrink: 0;
+    }
+
+    .dim-track {
+      flex: 1;
+      height: 6px;
+      background: #f0ede6;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .dim-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.7s ease;
+    }
+
+    .dim-pct {
+      font-size: 12px;
+      font-weight: 500;
+      width: 34px;
+      text-align: right;
+    }
+
+    /* ── Submit ── */
+    .submit-btn {
+      width: 100%;
+      background: #0F6E56;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 1.25rem;
+    }
+
+    .submit-btn:hover { background: #085041; }
+    .submit-btn:disabled { background: #b0cfc7; cursor: not-allowed; }
+
+    /* ── Analysis output ── */
+    .analysis-card {
+      background: #fff;
+      border: 1px solid #e8e6e0;
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .analysis-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #0F6E56;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .analysis-text {
+      font-size: 15px;
+      line-height: 1.85;
+      color: #1a1a1a;
+      white-space: pre-wrap;
+    }
+
+    .loading-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.5rem 0;
+      color: #888;
+      font-size: 14px;
+    }
+
+    .dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #1D9E75;
+      animation: bounce 1.2s infinite;
+    }
+
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    .restart-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid #d0cdc6;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: #888;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.15s;
+    }
+
+    .restart-btn:hover { color: #333; border-color: #999; }
+
+    /* ── API key notice ── */
+    .api-notice {
+      background: #fffbea;
+      border: 1px solid #f0d060;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #7a5c00;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .api-notice a { color: #0F6E56; }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <header class="site-header">
+    <div class="site-eyebrow">Modernizing Main Street</div>
+    <h1 class="site-title">Business Readiness Diagnostic</h1>
+    <p class="site-subtitle">Answer 10 questions to receive a personalized fit score and written analysis of your business's potential.</p>
+  </header>
+
+  <div class="api-notice" id="api-notice">
+    ⚠️ API key not configured. To enable the written analysis, add your Anthropic API key to this file. <a href="https://console.anthropic.com" target="_blank">Get a key at console.anthropic.com</a>
+  </div>
+
+  <div class="progress-label" id="progress-label">0 of 10 answered</div>
+  <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+
+  <div class="intro-banner">
+    This diagnostic takes about 3 minutes. Your answers help us understand where your business stands today — and what it would take to maximize its value.
+  </div>
+
+  <div id="sections-container"></div>
+  <div class="score-preview" id="score-preview"></div>
+
+  <button class="submit-btn" id="submit-btn" disabled onclick="submitDiagnostic()">
+    Generate My Score &amp; Analysis
+  </button>
+
+  <div id="analysis-output"></div>
+
+  <button class="restart-btn" id="restart-btn" style="display:none" onclick="restart()">
+    Start over
+  </button>
+
+  <footer class="site-footer">
+    &copy; 2025 Modernizing Main Street &mdash; Confidential
+  </footer>
+
+</div>
+
+<script>
+  // ─────────────────────────────────────────
+  // ⚙️  CONFIGURATION — add your API key here
+  // ─────────────────────────────────────────
+  const ANTHROPIC_API_KEY = 'YOUR_API_KEY_HERE';
+  // ─────────────────────────────────────────
+
+  const sections = [
+    {
+      title: "Owner dependency", icon: "👤", color: "#E1F5EE", dimColor: "#1D9E75",
+      questions: [
+        { id:"q1", label:"How dependent is the business on you personally to operate day-to-day?", options:["It runs fine without me for weeks","It runs okay for a few days","It slows significantly if I'm away","It basically stops without me"], scores:[3,2,1,0] },
+        { id:"q2", label:"Do you have documented processes your team can follow independently?", options:["Yes, comprehensive SOPs exist","Some processes are documented","Very few things are written down","Nothing is documented"], scores:[3,2,1,0] }
+      ]
+    },
+    {
+      title: "Revenue & financials", icon: "📊", color: "#E6F1FB", dimColor: "#378ADD",
+      questions: [
+        { id:"q3", label:"What is your business's approximate annual revenue?", options:["Under $250K","$250K – $1M","$1M – $3M","Over $3M"], scores:[0,2,3,1] },
+        { id:"q4", label:"How would you describe your revenue trend over the past 2 years?", options:["Growing consistently","Flat but stable","Somewhat unpredictable","Declining"], scores:[3,2,1,0] }
+      ]
+    },
+    {
+      title: "Recurring revenue", icon: "🔁", color: "#FAEEDA", dimColor: "#BA7517",
+      questions: [
+        { id:"q5", label:"What percentage of your revenue is recurring or predictable?", options:["More than 70%","40% – 70%","10% – 40%","Less than 10%"], scores:[3,2,1,0] },
+        { id:"q6", label:"How long do customers typically stay with your business?", options:["5+ years on average","2–5 years","1–2 years","Often one-time purchases"], scores:[3,2,1,0] }
+      ]
+    },
+    {
+      title: "Process maturity", icon: "⚙️", color: "#FAECE7", dimColor: "#D85A30",
+      questions: [
+        { id:"q7", label:"How would you rate the automation and efficiency of your core operations?", options:["Highly automated, little manual work","Some automation, some manual","Mostly manual with some tools","Almost entirely manual"], scores:[3,2,1,0] },
+        { id:"q8", label:"Could a new hire follow your processes and be productive within 30 days?", options:["Yes, easily","Probably with some guidance","It would be challenging","Very unlikely"], scores:[3,2,1,0] }
+      ]
+    },
+    {
+      title: "Succession & exit readiness", icon: "🔑", color: "#EEEDFE", dimColor: "#7F77DD",
+      questions: [
+        { id:"q9", label:"Have you thought about or begun planning for an eventual business exit?", options:["Yes, I have a plan in place","I've thought about it seriously","It's crossed my mind casually","I haven't thought about it"], scores:[3,2,1,0] },
+        { id:"q10", label:"What is your primary motivation right now?", options:["Maximize value before selling","Reduce my personal workload","Grow the business significantly","Keep things stable and running"], scores:[3,3,2,1] }
+      ]
+    }
+  ];
+
+  const answers = {};
+  const totalQ = sections.reduce((a,s) => a + s.questions.length, 0);
+
+  // Show API key warning if not configured
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!ANTHROPIC_API_KEY || ANTHROPIC_API_KEY === 'YOUR_API_KEY_HERE') {
+      document.getElementById('api-notice').style.display = 'block';
+    }
+    renderSections();
+  });
+
+  function renderSections() {
+    const container = document.getElementById('sections-container');
+    container.innerHTML = '';
+    sections.forEach(sec => {
+      const card = document.createElement('div');
+      card.className = 'section-card';
+      card.innerHTML = `
+        <div class="section-header">
+          <div class="section-icon" style="background:${sec.color}">${sec.icon}</div>
+          <div class="section-title">${sec.title}</div>
+        </div>
+        ${sec.questions.map(q => `
+          <div class="question" id="q-block-${q.id}">
+            <div class="question-label">${q.label}</div>
+            <div class="options">
+              ${q.options.map((opt, oi) => `<button class="option-btn" data-qid="${q.id}" data-val="${oi}">${opt}</button>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      `;
+      container.appendChild(card);
+    });
+
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const qid = this.dataset.qid;
+        const val = parseInt(this.dataset.val);
+        answers[qid] = val;
+        document.querySelectorAll(`.option-btn[data-qid="${qid}"]`).forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        updateProgress();
+      });
+    });
+  }
+
+  function updateProgress() {
+    const answered = Object.keys(answers).length;
+    document.getElementById('progress-fill').style.width = (answered / totalQ * 100) + '%';
+    document.getElementById('progress-label').textContent = `${answered} of ${totalQ} answered`;
+    const allDone = answered >= totalQ;
+    document.getElementById('submit-btn').disabled = !allDone;
+    if (allDone) renderScorePreview();
+  }
+
+  function computeScores() {
+    let totalScore = 0, totalMax = 0;
+    const dims = sections.map(sec => {
+      let secScore = 0, secMax = 0;
+      sec.questions.forEach(q => {
+        secScore += q.scores[answers[q.id] ?? 0];
+        secMax += Math.max(...q.scores);
+      });
+      totalScore += secScore;
+      totalMax += secMax;
+      return { title: sec.title, pct: Math.round(secScore / secMax * 100), color: sec.dimColor };
+    });
+    return { overall: Math.round(totalScore / totalMax * 100), dims };
+  }
+
+  function getVerdict(pct) {
+    if (pct >= 80) return { label:"Strong fit", tagline:"Your business shows the hallmarks of a high-potential modernization candidate.", bg:"#E1F5EE", border:"#1D9E75", color:"#085041" };
+    if (pct >= 60) return { label:"Promising fit", tagline:"There's real opportunity here — targeted improvements could make this a strong candidate.", bg:"#E6F1FB", border:"#378ADD", color:"#0C447C" };
+    if (pct >= 40) return { label:"Emerging fit", tagline:"You have a foundation to build on. Some key gaps need addressing to unlock full potential.", bg:"#FAEEDA", border:"#BA7517", color:"#633806" };
+    return { label:"Early stage", tagline:"This business has room to grow — but now is the right time to start laying the groundwork.", bg:"#FAECE7", border:"#D85A30", color:"#712B13" };
+  }
+
+  function renderScorePreview() {
+    const { overall, dims } = computeScores();
+    const v = getVerdict(overall);
+    const preview = document.getElementById('score-preview');
+    preview.style.display = 'block';
+    preview.innerHTML = `
+      <div class="score-top">
+        <div class="score-circle" style="background:${v.bg};border-color:${v.border};color:${v.color}">
+          <div class="score-number">${overall}</div>
+          <div class="score-denom">/ 100</div>
+        </div>
+        <div>
+          <div class="score-verdict-label" style="color:${v.color}">${v.label}</div>
+          <div class="score-verdict">Fit Score: ${overall}/100</div>
+          <div class="score-tagline">${v.tagline}</div>
+        </div>
+      </div>
+      <div class="dimension-bars">
+        ${dims.map(d => `
+          <div class="dim-row">
+            <div class="dim-name">${d.title}</div>
+            <div class="dim-track"><div class="dim-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+            <div class="dim-pct" style="color:${d.color}">${d.pct}%</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  async function submitDiagnostic() {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Generating analysis...';
+
+    const { overall, dims } = computeScores();
+    const v = getVerdict(overall);
+
+    const summaryLines = sections.map(sec =>
+      sec.title + ':\n' + sec.questions.map(q =>
+        `  - ${q.label} → "${q.options[answers[q.id]]}"`
+      ).join('\n')
+    ).join('\n\n');
+
+    const prompt = `You are an expert advisor for "Modernizing Main Street," a consulting and acquisition firm targeting small businesses ($500K–$3M revenue) that are undervalued, owner-dependent, and below the private equity radar.
+
+A business owner completed a self-assessment. Their overall fit score is ${overall}/100 (${v.label}).
+
+Dimension scores:
+${dims.map(d => `- ${d.title}: ${d.pct}%`).join('\n')}
+
+Their answers:
+${summaryLines}
+
+Write a candid, encouraging 4–6 paragraph analysis covering: (1) overall fit and what the score means, (2) biggest opportunity areas where modernization unlocks the most value, (3) key risk factors or friction points, and (4) a direct recommendation on their next best step. Reference their specific answers. Warm but direct advisor tone. Flowing paragraphs only — no bullet points.`;
+
+    const outputEl = document.getElementById('analysis-output');
+    outputEl.innerHTML = `
+      <div class="analysis-card">
+        <div class="analysis-eyebrow">Your Written Analysis</div>
+        <div class="loading-wrap">
+          <div class="dots"><span></span><span></span><span></span></div>
+          Generating your analysis…
+        </div>
+      </div>
+    `;
+    outputEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1024,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await resp.json();
+      const text = data.content?.[0]?.text || 'Unable to generate analysis. Please try again.';
+
+      outputEl.innerHTML = `
+        <div class="analysis-card">
+          <div class="analysis-eyebrow">Your Written Analysis</div>
+          <div class="analysis-text">${text}</div>
+        </div>
+      `;
+    } catch(e) {
+      outputEl.innerHTML = `
+        <div class="analysis-card">
+          <div class="analysis-eyebrow">Error</div>
+          <div class="analysis-text">Something went wrong generating your analysis. Please check your API key and try again.</div>
+        </div>
+      `;
+    }
+
+    document.getElementById('restart-btn').style.display = 'block';
+    btn.style.display = 'none';
+  }
+
+  function restart() {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    document.getElementById('analysis-output').innerHTML = '';
+    document.getElementById('score-preview').style.display = 'none';
+    document.getElementById('progress-fill').style.width = '0%';
+    document.getElementById('progress-label').textContent = `0 of ${totalQ} answered`;
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').style.display = 'block';
+    document.getElementById('submit-btn').textContent = 'Generate My Score & Analysis';
+    document.getElementById('restart-btn').style.display = 'none';
+    renderSections();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
